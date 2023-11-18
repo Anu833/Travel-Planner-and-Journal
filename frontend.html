@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Journal App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #tripForm, #journalForm {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loginContainer">
+    <h2>Login</h2>
+    <label for="username">Username:</label>
+    <input type="text" id="username">
+    <label for="password">Password:</label>
+    <input type="password" id="password">
+    <button onclick="login()">Login</button>
+</div>
+
+<div id="mainContainer" style="display: none;">
+    <button onclick="showTripForm()">Create Trip</button>
+    <button onclick="showJournals()">View Journals</button>
+    <button onclick="logout()">Logout</button>
+
+    <div id="tripForm">
+        <h2>Create Trip</h2>
+        <label for="tripDates">Dates:</label>
+        <input type="text" id="tripDates">
+        <label for="location">Location:</label>
+        <input type="text" id="location">
+        <label for="budget">Budget:</label>
+        <input type="text" id="budget">
+        <label for="journal">Journal:</label>
+        <textarea id="journal"></textarea>
+        <button onclick="createTrip()">Save Trip</button>
+    </div>
+
+    <div id="journalForm">
+        <h2>Write Journal</h2>
+        <label for="comments">Comments:</label>
+        <textarea id="comments"></textarea>
+        <button onclick="saveJournal()">Save Journal</button>
+    </div>
+
+    <div id="tripList" style="display: none;">
+        <h2>Your Trips</h2>
+        <ul id="tripItems"></ul>
+    </div>
+
+    <div id="journalList" style="display: none;">
+        <h2>Your Journals</h2>
+        <ul id="journalItems"></ul>
+    </div>
+</div>
+
+<script>
+    let currentUser = null;
+
+    function login() {
+        // Placeholder for actual login logic
+        // Replace the following line with your authentication API call
+        // Example: fetch('/api/login', { method: 'POST', body: JSON.stringify({ username, password }), headers: { 'Content-Type': 'application/json' } })
+        currentUser = document.getElementById("username").value;
+        document.getElementById("loginContainer").style.display = "none";
+        document.getElementById("mainContainer").style.display = "block";
+    }
+
+    function logout() {
+        currentUser = null;
+        document.getElementById("loginContainer").style.display = "block";
+        document.getElementById("mainContainer").style.display = "none";
+    }
+
+    function showTripForm() {
+        document.getElementById("tripForm").style.display = "block";
+        document.getElementById("journalForm").style.display = "none";
+        document.getElementById("tripList").style.display = "none";
+        document.getElementById("journalList").style.display = "none";
+    }
+
+    function showJournals() {
+        document.getElementById("tripForm").style.display = "none";
+        document.getElementById("journalForm").style.display = "none";
+        document.getElementById("tripList").style.display = "block";
+        document.getElementById("journalList").style.display = "block";
+
+        // Fetch and display the list of trips
+        // Replace the following line with your API call to fetch trips
+        // Example: fetch(`/api/trips?user=${currentUser}`)
+        // .then(response => response.json())
+        // .then(data => displayTrips(data));
+        const mockTrips = [{ dates: '2023-12-01 to 2023-12-07', location: 'Paris', budget: '$2000', journal: 'Beautiful city!' }, { dates: '2023-12-15 to 2023-12-20', location: 'Tokyo', budget: '$3000', journal: 'Amazing trip!' }];
+        displayTrips(mockTrips);
+    }
+
+    function createTrip() {
+        // Placeholder for actual trip creation logic
+        // Replace the following line with your API call to create a trip
+        // Example: fetch('/api/trips', { method: 'POST', body: JSON.stringify({ user: currentUser, dates, location, budget, journal }), headers: { 'Content-Type': 'application/json' } })
+        alert("Trip created successfully!");
+    }
+
+    function displayTrips(trips) {
+        const tripList = document.getElementById("tripItems");
+        tripList.innerHTML = '';
+        trips.forEach(trip => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${trip.location} (${trip.dates}) - Budget: ${trip.budget} - Journal: ${trip.journal}`;
+            tripList.appendChild(listItem);
+        });
+    }
+
+    function saveJournal() {
+        // Placeholder for actual journal saving logic
+        // Replace the following line with your API call to save a journal
+        // Example: fetch('/api/journals', { method: 'POST', body: JSON.stringify({ user: currentUser, comments }), headers: { 'Content-Type': 'application/json' } })
+        alert("Journal saved successfully!");
+    }
+
+    window.onload = function () {
+        // Additional initialization logic, if needed
+    };
+</script>
+
+</body>
+</html>
