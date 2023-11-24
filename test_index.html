@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Journal App</title>
+    <style>
+        /* Your CSS styles */
+        /* CSS styles for the navigation bar */
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        /* General styles for containers */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Roboto';
+            margin: 0;
+            background-image: url('bg.jpg');
+            /* Add additional background properties for positioning and styling */
+            /* background-size: cover; */
+            /* background-repeat: no-repeat; */
+            /* ... */
+        }
+
+
+        #loginContainer,
+        #registerContainer,
+        #mainContainer {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="#" onclick="showContainer('loginContainer')">Login</a>
+        <a href="#" onclick="showContainer('registerContainer')">Register</a>
+        <a href="#" onclick="showContainer('createTripForm')">Create Trip</a>
+    </div>
+    
+
+
+    <div id="loginContainer">
+        <!-- Login form -->
+        <h2>Login</h2>
+        <label for="loginUsername">Username:</label>
+        <input type="text" id="loginUsername">
+        <label for="loginPassword">Password:</label>
+        <input type="password" id="loginPassword">
+        <button onclick="login()">Login</button>
+    </div>
+    
+    <div id="registerContainer">
+        <!-- Registration form -->
+        <h2>Register</h2>
+        <label for="registerUsername">Username:</label>
+        <input type="text" id="registerUsername">
+        <label for="registerPassword">Password:</label>
+        <input type="password" id="registerPassword">
+        <button onclick="register()">Register</button>
+    </div>
+    
+    <div id="mainContainer" style="display: none;">
+    <!--    <button >Create Trip</button> -->
+        <button onclick="logout()">Logout</button>
+
+       
+    
+        <div id="createTripForm" style="display: none;">
+            <h2>Create Trip</h2>
+            <!--<label for="tripDates">Dates:</label>
+            <input type="text" id="tripDates">-->
+            <label for="tripDates">Date:</label>
+            <input type="date" id="tripDates">
+            <label for="location">Location:</label>
+            <input type="text" id="location">
+            <label for="budget">Budget:</label>
+            <input type="text" id="budget">
+            <label for="journal">Journal:</label>
+            <textarea id="journal"></textarea>
+            <button onclick="createTrip()">Save Trip</button>
+        </div>
+    
+        <!-- Your other content related to trips, journals, etc. -->
+    </div>
+
+
+<script>
+    let currentUser = null;
+    function login() {
+        const username = document.getElementById("loginUsername").value;
+        const password = document.getElementById("loginPassword").value;
+
+        fetch('http://localhost:5500/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Login successful!');
+                // Redirect or perform actions after successful login
+                currentUser = username;
+                document.getElementById("loginContainer").style.display = "none";
+                document.getElementById("registerContainer").style.display = "none";
+                document.getElementById("mainContainer").style.display = "block";
+                showCreateTripForm(); // Optionally show the trip creation form after login
+            } else {
+                alert('Invalid credentials');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function register() {
+        const username = document.getElementById("registerUsername").value;
+        const password = document.getElementById("registerPassword").value;
+
+        fetch('http://localhost:5500/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Registration successful!');
+                // Perform actions after successful registration if needed
+                document.getElementById("loginContainer").style.display = "none";
+                document.getElementById("registerContainer").style.display = "none";
+                document.getElementById("mainContainer").style.display = "block";
+                showCreateTripForm();
+            } else {
+                alert('Registration failed');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function showCreateTripForm() {
+        document.getElementById("createTripForm").style.display = "block";
+    }
+
+    function createTrip() {
+        console.log("creatTrip was called")
+        
+        const dates = document.getElementById("tripDates").value;
+        const location = document.getElementById("location").value;
+        const budget = document.getElementById("budget").value;
+        const journal = document.getElementById("journal").value;
+        console.log("I'm fetching")
+        // Fetch to create a trip
+        fetch('http://localhost:5500/api/trips', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: currentUser, dates, location, budget, journal })
+        })
+        /*
+        .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok at all');
+        }
+        return response.json();
+    })*/
+    .then(data => {
+        console.log('Trip created successfully:', data);
+        alert('Trip created successfully!');
+        // Additional logic after successful trip creation if needed
+    })
+    .catch(error => {
+        console.error('Error creating trip:', error.message);
+        alert('Failed to create trip!');
+    });
+}
+
+function showContainer(containerId) {
+    const containers = ['loginContainer', 'registerContainer', 'createTripForm'];
+    
+    containers.forEach(container => {
+        const el = document.getElementById(container);
+        if (el && container === containerId) {
+            el.style.display = 'block';
+        } else if (el) {
+            el.style.display = 'none';
+        }
+    });
+}
+
+function logout() {
+    currentUser = null; // Clear the current user
+    document.getElementById("loginContainer").style.display = "block";
+    document.getElementById("registerContainer").style.display = "block";
+    document.getElementById("mainContainer").style.display = "none";
+    //const tripsList = document.getElementById('tripsList');
+    //tripsList.innerHTML = '';
+}
+
+
+
+
+</script>
+
+</body>
+</html>
